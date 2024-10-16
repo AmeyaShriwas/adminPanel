@@ -33,36 +33,33 @@ const PdfList = () => {
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null); // For storing the uploaded file
 
-// Function to handle adding a new PDF
-const handleAddPdf = async () => {
-  if (!file) {
-    alert('Please upload an image.');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('file', file[0]);              // Append the file once
-  formData.append('pdfName', newPdf.pdfName); // PDF name
-  formData.append('pdfPrice', newPdf.price);  // PDF price
-
-  console.log('formData', formData);
-  console.log('file', file[0]);
-  console.log('newPdf', newPdf);
-
-  try {
-    console.log('formData', formData);
-    await axios.post(`${ApiUrl}/api/upload`, formData)
-      .then((response) => {
-        console.log('response', response.data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+  const handleAddPdf = async () => {
+    if (!file || file.length === 0) {
+      alert('Please upload an image.');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('file', file[0]);  // Ensure you're sending the first file
+    formData.append('pdfName', newPdf.pdfName); // PDF name
+    formData.append('pdfPrice', newPdf.price);  // PDF price
+  
+    try {
+      const response = await axios.post(`${ApiUrl}/api/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set this header explicitly
+        },
       });
-  } catch (error) {
-    console.error('Error uploading PDF:', error);
-    alert('Error uploading PDF. Please try again.');
-  }
-};
+  
+      console.log('Upload successful:', response.data);
+      alert('PDF uploaded successfully!');
+      setShowModal(false); // Close modal on success
+    } catch (error) {
+      console.error('Error uploading PDF:', error);
+      alert('Error uploading PDF. Please try again.');
+    }
+  };
+  
 
 
   // Function to handle file input change
