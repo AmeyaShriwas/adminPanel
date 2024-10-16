@@ -8,7 +8,7 @@ const Navigation = () => {
     <Router>
       <Routes>
         <Route path='/' element={<Login />} />
-        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/admin' element={<Dashboard />} />
 
       </Routes>
     </Router>

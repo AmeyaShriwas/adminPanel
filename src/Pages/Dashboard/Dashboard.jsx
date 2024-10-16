@@ -29,11 +29,16 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} setCurrentView={setCurrentView} />
+      {/* Sidebar - Full height and fixed */}
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        setCurrentView={setCurrentView}
+        className="w-64 h-screen fixed"
+      />
 
       {/* Main Content */}
-      <div className="flex-1 p-6  bg-gray-100 bg-white">
+      <div className="flex-1 ml-0 p-6 bg-gray-100 overflow-y-auto"> {/* Added margin to compensate for fixed sidebar */}
         {/* Conditional Rendering based on currentView */}
         {currentView === 'dashboard' && (
           <>
@@ -48,7 +53,6 @@ export default function Dashboard() {
           </>
         )}
         {currentView === 'pdfs' && <PdfList />} {/* Show PDF List when PDFs is selected */}
-        {/* Add more views as needed */}
       </div>
     </div>
   );

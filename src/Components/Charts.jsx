@@ -4,10 +4,10 @@ import { PieChart, BarChart, Pie, Tooltip, Legend, XAxis, YAxis, CartesianGrid, 
 
 const Charts = ({ pieData, barData }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">PDF Distribution</h3>
-        <PieChart width={400} height={400}>
+        <PieChart width={400} height={350}>
           <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" />
           <Tooltip />
           <Legend />
