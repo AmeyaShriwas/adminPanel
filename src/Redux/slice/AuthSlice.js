@@ -11,6 +11,7 @@ export const loginUser = createAsyncThunk(
     
     try {
       console.log('api url', ApiUrl)
+      console.log('data', userData)
       const response = await axios.post(`${ApiUrl}/api/admin/login`, userData);
       if (response.status !== 200) {
         throw new Error('Failed to login');
