@@ -8,11 +8,10 @@ const ApiUrl = 'https://notesapi.ameyashriwas.in'; // Correct variable name
 export const loginUser = createAsyncThunk(
   '/login',
   async(userData, {rejectWithValue}) => {
-    console.log('process', process.env)
     
     try {
       console.log('api url', ApiUrl)
-      const response = await axios.post(`${ApiUrl}/login`, userData);
+      const response = await axios.post(`${ApiUrl}/api/admin/login`, userData);
       if (response.status !== 200) {
         throw new Error('Failed to login');
       }
