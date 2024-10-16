@@ -33,36 +33,37 @@ const PdfList = () => {
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null); // For storing the uploaded file
 
-  // Function to handle adding a new PDF
-  const handleAddPdf = async () => {
-    if (!file) {
-      alert('Please upload an image.');
-      return;
-    }
+// Function to handle adding a new PDF
+const handleAddPdf = async () => {
+  if (!file) {
+    alert('Please upload an image.');
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append('file', file);              // Append the file once
-    formData.append('pdfName', newPdf.pdfName); // PDF name
-    formData.append('pdfPrice', newPdf.price);  // PDF price
+  const formData = new FormData();
+  formData.append('file', file);              // Append the file once
+  formData.append('pdfName', newPdf.pdfName); // PDF name
+  formData.append('pdfPrice', newPdf.price);  // PDF price
 
-    console.log('fileData', formData)
-    console.log('file', file)
-    console.log('fileData', newPdf)
+  console.log('formData', formData);
+  console.log('file', file);
+  console.log('newPdf', newPdf);
 
-    try {
-      console.log('formData', formData)
-      await axios.post(`${ApiUrl}/api/upload`, formData).then((response)=> {
-           console.log('response', response.data)
+  try {
+    console.log('formData', formData);
+    await axios.post(`${ApiUrl}/api/upload`, formData)
+      .then((response) => {
+        console.log('response', response.data);
       })
-      setPdfsData(updatedPdfs);
-      setNewPdf({ pdfName: '', pdfLink: '', price: '' });
-      setShowModal(false); // Close modal after adding PDF
-      setFile(null); // Reset file input
-    } catch (error) {
-      console.error('Error uploading PDF:', error);
-      alert('Error uploading PDF. Please try again.');
-    }
-  };
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  } catch (error) {
+    console.error('Error uploading PDF:', error);
+    alert('Error uploading PDF. Please try again.');
+  }
+};
+
 
   // Function to handle file input change
   const handleFileChange = (e) => {
