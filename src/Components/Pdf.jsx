@@ -45,11 +45,8 @@ const PdfList = () => {
     formData.append('pdfPrice', newPdf.price);  // PDF price
   
     try {
-      const response = await axios.post(`${ApiUrl}/api/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // Set this header explicitly
-        },
-      });
+      const response = await axios.post(`${ApiUrl}/api/upload`, formData
+      );
   
       console.log('Upload successful:', response.data);
       alert('PDF uploaded successfully!');
