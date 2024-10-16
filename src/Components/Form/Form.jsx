@@ -102,7 +102,7 @@ const AuthForm = () => {
         if(response.payload.token){
           toast.success("Logged in successfully!");
           setTimeout(()=> {
-            navigate('/landing')
+            navigate('/admin')
           }, 1000)
         
         }
