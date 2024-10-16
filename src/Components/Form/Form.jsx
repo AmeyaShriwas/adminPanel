@@ -3,7 +3,7 @@ import { FaUser, FaLock, FaEnvelope, FaPhone, FaKey } from 'react-icons/fa';
 import './Form.css'; // Add your CSS here for styling
 import { loginUser, signupUser, verifyUser, forgotPassword, resetPasswordFun } from './../../Redux/slice/AuthSlice';
 import { useDispatch } from 'react-redux';
-import banner from './../../Assets/banner.webp';
+import banner from './../../assets/banner.png';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
