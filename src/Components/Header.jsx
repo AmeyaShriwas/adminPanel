@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { logout } from '../Redux/slice/AuthSlice';
+import { useDispatch } from 'react-redux';
 
 const Header = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const dispatch = useDispatch()
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -11,6 +14,10 @@ const Header = () => {
   const toggleUserDropdown = () => {
     setShowUserDropdown(!showUserDropdown);
   };
+
+  const logoutFuntion = ()=> {
+     dispatch(logout())
+  }
 
   return (
     <header className="bg-gray-100 py-3 px-6 border-b border-gray-200 mb-5 rounded-lg ">
@@ -63,7 +70,7 @@ const Header = () => {
                   <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     Account
                   </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  <li onClick={logoutFuntion}className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     Logout
                   </li>
                 </ul>

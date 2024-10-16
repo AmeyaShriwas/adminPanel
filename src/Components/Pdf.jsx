@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios'; // For handling HTTP requests
 import Header from './Header';
 
+const validCategories = ['HTML', 'CSS', 'JavaScript', 'ReactJS', 'NodeJS', 'ExpressJS', 'MongoDB', 'MySQL', 'Bootstrap']; // Valid categories
+const ApiUrl = 'https://notesapi.ameyashriwas.in'; // Correct variable name
+
 const notesData = {
   JavaScript: {
     name: 'JavaScript Basics',
@@ -10,8 +13,6 @@ const notesData = {
     pdfs: [
       { pdfName: 'JavaScript Basics', pdfLink: 'http://localhost:3001/pdf/1' },
       { pdfName: 'Advanced JavaScript', pdfLink: 'http://localhost:3001/pdf/2' },
-      
-      // Other existing PDFs...
     ],
   },
   ReactJS: {
@@ -21,7 +22,6 @@ const notesData = {
     pdfs: [
       { pdfName: 'React Introduction', pdfLink: 'http://localhost:3001/pdf/3' },
       { pdfName: 'React Hooks', pdfLink: 'http://localhost:3001/pdf/4' },
-      // Other existing PDFs...
     ],
   },
 };
@@ -29,7 +29,7 @@ const notesData = {
 const PdfList = () => {
   const [pdfsData, setPdfsData] = useState(notesData);
   const [currentSubject, setCurrentSubject] = useState('JavaScript');
-  const [newPdf, setNewPdf] = useState({ pdfName: '', pdfLink: '', subject: currentSubject, price: '' });
+  const [newPdf, setNewPdf] = useState({ pdfName: '', pdfLink: '', price: '' });
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null); // For storing the uploaded file
 
@@ -43,22 +43,19 @@ const PdfList = () => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('pdfName', newPdf.pdfName);
-    formData.append('pdfLink', newPdf.pdfLink);
+    formData.append('pdfLink', file);
     formData.append('price', newPdf.price);
-    formData.append('subject', newPdf.subject);
+
+    console.log('formData', formData)
+    console.log('file', file)
+    console.log('pdf', newPdf)
 
     try {
-      await axios.post('http://localhost:3001/api/upload', formData);
-      // Update state after successful upload
-      const updatedPdfs = {
-        ...pdfsData,
-        [newPdf.subject]: {
-          ...pdfsData[newPdf.subject],
-          pdfs: [...pdfsData[newPdf.subject].pdfs, { pdfName: newPdf.pdfName, pdfLink: newPdf.pdfLink }]
-        }
-      };
+      await axios.post(`${ApiUrl}/api/upload`, formData).then((response)=> {
+           console.log('response', response.data)
+      })
       setPdfsData(updatedPdfs);
-      setNewPdf({ pdfName: '', pdfLink: '', subject: currentSubject, price: '' });
+      setNewPdf({ pdfName: '', pdfLink: '', price: '' });
       setShowModal(false); // Close modal after adding PDF
       setFile(null); // Reset file input
     } catch (error) {
@@ -124,13 +121,11 @@ const PdfList = () => {
               </td>
               <td className="border px-4 py-2">
                 <button
-                  onClick={() => handleUpdatePdf(currentSubject, index, { pdfName: 'Updated Name', pdfLink: pdf.pdfLink })}
                   className="bg-yellow-500 text-white px-2 py-1 mr-2"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDeletePdf(currentSubject, index)}
                   className="bg-red-500 text-white px-2 py-1"
                 >
                   Delete
@@ -148,29 +143,19 @@ const PdfList = () => {
             <h2 className="text-xl font-bold mb-4">Add New PDF</h2>
 
             <div className="mb-2">
-              <label className="block">Select Subject</label>
+              <label className="block">Select PDF Category</label>
               <select
-                value={newPdf.subject}
-                onChange={(e) => setNewPdf({ ...newPdf, subject: e.target.value })}
-                className="border px-2 py-1 w-full"
-              >
-                {Object.keys(pdfsData).map((subject) => (
-                  <option key={subject} value={subject}>
-                    {subject}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-2">
-              <label className="block">PDF Name</label>
-              <input
-                type="text"
                 value={newPdf.pdfName}
                 onChange={(e) => setNewPdf({ ...newPdf, pdfName: e.target.value })}
                 className="border px-2 py-1 w-full"
-                placeholder="Enter PDF name"
-              />
+              >
+                <option value="">Select a category</option>
+                {validCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="mb-2">
