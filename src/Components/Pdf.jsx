@@ -51,6 +51,7 @@ const PdfList = () => {
     console.log('pdf', newPdf)
 
     try {
+      console.log('formData', formData)
       await axios.post(`${ApiUrl}/api/upload`, formData).then((response)=> {
            console.log('response', response.data)
       })
