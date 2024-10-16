@@ -41,12 +41,12 @@ const handleAddPdf = async () => {
   }
 
   const formData = new FormData();
-  formData.append('file', file);              // Append the file once
+  formData.append('file', file[0]);              // Append the file once
   formData.append('pdfName', newPdf.pdfName); // PDF name
   formData.append('pdfPrice', newPdf.price);  // PDF price
 
   console.log('formData', formData);
-  console.log('file', file);
+  console.log('file', file[0]);
   console.log('newPdf', newPdf);
 
   try {
@@ -67,7 +67,7 @@ const handleAddPdf = async () => {
 
   // Function to handle file input change
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    setFile(e.target.files);
   };
 
   // Get PDF list for the currently selected subject
