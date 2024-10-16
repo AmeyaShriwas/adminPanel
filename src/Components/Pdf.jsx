@@ -43,8 +43,8 @@ const PdfList = () => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('pdfName', newPdf.pdfName);
-    formData.append('pdfLink', file);
-    formData.append('price', newPdf.price);
+    formData.append('file', file);
+    formData.append('pdfPrice', newPdf.price);
 
     console.log('formData', formData)
     console.log('file', file)
