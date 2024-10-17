@@ -1,34 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // For handling HTTP requests
 import Header from './Header';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const validCategories = ['HTML', 'CSS', 'JavaScript', 'ReactJS', 'NodeJS', 'ExpressJS', 'MongoDB', 'MySQL', 'Bootstrap']; // Valid categories
-const ApiUrl = 'https://notesapi.ameyashriwas.in'; // Correct variable name
-
-const notesData = {
-  JavaScript: {
-    name: 'JavaScript Basics',
-    price: 300,
-    img: 'path_to_js_image',
-    pdfs: [
-      { pdfName: 'JavaScript Basics', pdfLink: 'http://localhost:3001/pdf/1' },
-      { pdfName: 'Advanced JavaScript', pdfLink: 'http://localhost:3001/pdf/2' },
-    ],
-  },
-  ReactJS: {
-    name: 'React Introduction',
-    price: 300,
-    img: 'path_to_react_image',
-    pdfs: [
-      { pdfName: 'React Introduction', pdfLink: 'http://localhost:3001/pdf/3' },
-      { pdfName: 'React Hooks', pdfLink: 'http://localhost:3001/pdf/4' },
-    ],
-  },
-};
+const ApiUrl = 'https://notesapi.ameyashriwas.in'; // API base URL
 
 const PdfList = () => {
-  const [pdfsData, setPdfsData] = useState(notesData);
-  const [currentSubject, setCurrentSubject] = useState('JavaScript');
+  const [pdfsData, setPdfsData] = useState([]); // State to hold PDF data
+  const [currentSubject, setCurrentSubject] = useState('');
   const [newPdf, setNewPdf] = useState({ pdfName: '', pdfLink: '', price: '', pdfSubTypes: [] });
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null); // For storing the uploaded file (PDF)
@@ -36,23 +17,40 @@ const PdfList = () => {
   const [subCategory, setSubCategory] = useState(''); // For storing new subcategory input
   const [subCategories, setSubCategories] = useState([]); // For storing list of subcategories
 
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await axios.get(`${ApiUrl}/api/collections`);
+        setPdfsData(response.data);
+        console.log('resp', response.data);
+      } catch (error) {
+        console.error('Error fetching collections:', error);
+      }
+    };
+
+    fetchCollections();
+    console.log('cu', currentSubject)
+  }, []);
+
+  useEffect(() => {
+    console.log('cu', currentSubject)
+
+  }, [currentSubject])
+
+
   // Function to handle adding subcategories
   const handleAddSubCategory = () => {
     if (subCategory.trim()) {
-      const findCategory = subCategories.find((a,b)=> a === subCategory)
-        if(findCategory){
-          alert('already present in these')
-          return null
-        }
-        else{
-          setSubCategories([...subCategories, subCategory.trim()]);
-          setSubCategory('');
-        }
-      
+      const findCategory = subCategories.find((a) => a === subCategory);
+      if (findCategory) {
+        alert('Already present in these');
+        return null;
+      } else {
+        setSubCategories([...subCategories, subCategory.trim()]);
+        setSubCategory('');
       }
-   
     }
-  
+  };
 
   // Function to remove subcategory
   const handleRemoveSubCategory = (index) => {
@@ -64,33 +62,23 @@ const PdfList = () => {
       alert('Please upload a PDF and an image.');
       return;
     }
-  
-    // Log all form data to the console
-    console.log('PDF Name:', newPdf.pdfName);
-    console.log('PDF File:', file[0]);
-    console.log('PDF Price:', newPdf.price);
-    console.log('PDF Image:', image[0]);
-    console.log('Subcategories:', subCategories);
-  
+
     const formData = new FormData();
     formData.append('file', file[0]); // Ensure you're sending the first PDF file
     formData.append('pdfName', newPdf.pdfName); // PDF name
     formData.append('pdfPrice', newPdf.price); // PDF price
     formData.append('pdfImg', image[0]); // Image
     formData.append('pdfSubTypes', JSON.stringify(subCategories)); // Subcategories
-  
+
     try {
       const response = await axios.post(`${ApiUrl}/api/upload`, formData);
-  
-      console.log('Upload successful:', response.data);
-      alert('PDF uploaded successfully!');
+      toast.success(response.data.message);
       setShowModal(false); // Close modal on success
     } catch (error) {
+      toast.error(error.message);
       console.error('Error uploading PDF:', error);
-      alert('Error uploading PDF. Please try again.');
     }
   };
-  
 
   // Function to handle file input change for PDFs
   const handleFileChange = (e) => {
@@ -103,7 +91,6 @@ const PdfList = () => {
   };
 
   // Get PDF list for the currently selected subject
-  const currentPdfs = pdfsData[currentSubject].pdfs;
 
   return (
     <>
@@ -115,13 +102,14 @@ const PdfList = () => {
         <div className="mb-4">
           <label className="block mb-2">Select Category:</label>
           <select
-            value={currentSubject}
+            // value={currentSubject}
             onChange={(e) => setCurrentSubject(e.target.value)}
             className="border px-2 py-1"
           >
-            {Object.keys(pdfsData).map((subject) => (
-              <option key={subject} value={subject}>
-                {subject}
+            <option value="">select pdf</option>
+            {pdfsData?.map((subject) => (
+              <option key={subject} value={subject.pdfName}>
+                {subject.pdfName}
               </option>
             ))}
           </select>
@@ -134,32 +122,41 @@ const PdfList = () => {
           </button>
         </div>
 
-        {/* Table to display PDFs of the selected subject */}
-        <table className="table-auto w-full mb-4 overflow-y-auto">
-          <thead>
-            <tr className="text-left">
-              <th className="border px-4 py-2">PDF Name</th>
-              <th className="border px-4 py-2">PDF Link</th>
-              <th className="border px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentPdfs.map((pdf, index) => (
-              <tr key={`${currentSubject}-${index}`}>
-                <td className="border px-4 py-2">{pdf.pdfName}</td>
-                <td className="border px-4 py-2">
-                  <a href={pdf.pdfLink} className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">
-                    {pdf.pdfLink}
-                  </a>
-                </td>
-                <td className="border px-4 py-2">
-                  <button className="bg-yellow-500 text-white px-2 py-1 mr-2">Edit</button>
-                  <button className="bg-red-500 text-white px-2 py-1">Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {pdfsData.map((obj) => {
+          if (obj.pdfName !== currentSubject) {
+            <div>
+              <h1>Select Subtypes to see data</h1>
+              </div>
+           
+          }
+
+          return (
+            <table key={obj._id} className="min-w-full table-auto border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="px-4 py-2 border border-gray-300">Subtypes</th>
+                  <th className="px-4 py-2 border border-gray-300">Delete</th>
+                  <th className="px-4 py-2 border border-gray-300">Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {obj.pdfSubTypes.map((subType, index) => (
+                  <tr key={index} className="border-t border-gray-300">
+                    <td className="px-4 py-2 border border-gray-300">{subType}</td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      <button className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      <button className="bg-blue-500 text-white px-3 py-1 rounded">Edit</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          );
+        })}
+
+
 
         {/* Modal for adding a new PDF */}
         {showModal && (
@@ -229,43 +226,32 @@ const PdfList = () => {
                 </button>
 
                 <div className="mt-2 overflow-y-scroll" style={{ height: '160px' }}>
-                  {subCategories.map((subcategory, index) => (
-                    <span
-                      key={index}
-                      className="flex flex-wrap items-center mt-2 border w-auto p-2 rounded-md"
-                    >
-                      <span className="flex items-center">
-                        <span className="px-1">{subcategory}</span>
-                        <span
-                          onClick={() => handleRemoveSubCategory(index)}
-                          className="cursor-pointer text-red-600 ml-2"
-                          role="button"
-                        >
-                          🗑️ {/* You can replace this emoji with any delete icon you prefer */}
-                        </span>
-                      </span>
-                    </span>
+                  {subCategories.map((sub, index) => (
+                    <div key={index} className="flex justify-between">
+                      <span>{sub}</span>
+                      <button onClick={() => handleRemoveSubCategory(index)} className="text-red-500">Remove</button>
+                    </div>
                   ))}
                 </div>
-
               </div>
 
               <button
                 onClick={handleAddPdf}
-                className="bg-blue-500 text-white px-4 py-2 mt-4"
+                className="bg-blue-500 text-white px-4 py-2 mt-2"
               >
                 Add PDF
               </button>
-
               <button
                 onClick={() => setShowModal(false)}
-                className="bg-gray-500 text-white px-4 py-2 mt-4 ml-4"
+                className="bg-gray-500 text-white px-4 py-2 mt-2 ml-2"
               >
-                Cancel
+                Close
               </button>
             </div>
           </div>
         )}
+
+        <ToastContainer />
       </div>
     </>
   );
