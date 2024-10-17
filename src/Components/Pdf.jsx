@@ -124,37 +124,38 @@ const PdfList = () => {
 
         {pdfsData.map((obj) => {
           if (obj.pdfName !== currentSubject) {
-            <div>
-              <h1>Select Subtypes to see data</h1>
-              </div>
-           
-          }
-
-          return (
-            <table key={obj._id} className="min-w-full table-auto border-collapse border border-gray-200">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="px-4 py-2 border border-gray-300">Subtypes</th>
-                  <th className="px-4 py-2 border border-gray-300">Delete</th>
-                  <th className="px-4 py-2 border border-gray-300">Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {obj.pdfSubTypes.map((subType, index) => (
-                  <tr key={index} className="border-t border-gray-300">
-                    <td className="px-4 py-2 border border-gray-300">{subType}</td>
-                    <td className="px-4 py-2 border border-gray-300">
-                      <button className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
-                    </td>
-                    <td className="px-4 py-2 border border-gray-300">
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded">Edit</button>
-                    </td>
+            return (
+              null
+            );
+          } else if (obj.pdfName === currentSubject) {
+            return (
+              <table key={obj._id} className="min-w-full table-auto border-collapse border border-gray-200">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="px-4 py-2 border border-gray-300">Subtypes</th>
+                    <th className="px-4 py-2 border border-gray-300">Delete</th>
+                    <th className="px-4 py-2 border border-gray-300">Edit</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          );
+                </thead>
+                <tbody>
+                  {obj.pdfSubTypes.map((subType, index) => (
+                    <tr key={index} className="border-t border-gray-300">
+                      <td className="px-4 py-2 border border-gray-300 text-center">{subType}</td>
+                      <td className="px-4 py-2 border border-gray-300 text-center">
+                        <button className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
+                      </td>
+                      <td className="px-4 py-2 border border-gray-300 text-center">
+                        <button className="bg-blue-500 text-white px-3 py-1 rounded">Edit</button>
+                      </td>
+
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            );
+          }
         })}
+
 
 
 
