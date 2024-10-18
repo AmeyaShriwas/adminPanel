@@ -20,7 +20,7 @@ const PdfList = () => {
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const response = await axios.get(`${ApiUrl}/api/collections`);
+        const response = await axios.post('https://notesapi.ameyashriwas.in/api/get-collection-details', {collectionName: 'pdfmodels'})
         setPdfsData(response.data);
         console.log('resp', response.data);
       } catch (error) {
